@@ -55,7 +55,27 @@ async function run() {
             const email = req.params.email;
             const query = { email: email };
             const result = await serviceCollection.find(query).toArray()
-            console.log(result);
+            // console.log(result);
+            res.send(result);
+        })
+        //Update Service
+        // use Put operation to update
+        app.put('/update-service/:id', async (req, res) => {
+            const id = req.params.id;
+            const service = req.body;
+            const updated = {
+                $set: service
+            }
+            const query = { _id: new ObjectId(id) };
+            const options = { upsert: true }
+            const result = await serviceCollection.updateOne(query, updated, options);
+            res.send(result);
+        })
+        // delete a job 
+        app.delete('/services/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await serviceCollection.deleteOne(query);
             res.send(result);
         })
 
