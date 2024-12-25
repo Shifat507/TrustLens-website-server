@@ -32,22 +32,30 @@ async function run() {
             // console.log(result);
         })
         // set all services to localhost API
-        app.get('/services', async(req, res)=>{
+        app.get('/services', async (req, res) => {
             const result = await serviceCollection.find().toArray();
             res.send(result);
         })
         // featured section data
         app.get('/featured-services', async (req, res) => {
-            
+
             const result = await serviceCollection.find().limit(6).toArray();
             res.send(result)
             // console.log(result);
         })
         // get individual data 
-        app.get('/services/:id', async(req, res)=>{
+        app.get('/services/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id : new ObjectId(id)};
+            const query = { _id: new ObjectId(id) };
             const result = await serviceCollection.findOne(query);
+            res.send(result);
+        })
+        // get all services posted by specific user 
+        app.get('/my-services/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email: email };
+            const result = await serviceCollection.find(query).toArray()
+            console.log(result);
             res.send(result);
         })
 
