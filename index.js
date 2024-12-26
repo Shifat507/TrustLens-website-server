@@ -118,6 +118,25 @@ async function run() {
             // console.log(result);
             res.send(result);
         })
+        // use Put operation to update
+        app.put('/update-review/:id', async (req, res) => {
+            const id = req.params.id;
+            const formData = req.body;
+            const updated = {
+                $set: formData
+            }
+            const query = { _id: new ObjectId(id) };
+            const options = { upsert: true }
+            const result = await reviewCollection.updateOne(query, updated, options);
+            res.send(result);
+        })
+        // delete a job ---------------------
+        // app.delete('/services/:id', async (req, res) => {
+        //     const id = req.params.id;
+        //     const query = { _id: new ObjectId(id) };
+        //     const result = await serviceCollection.deleteOne(query);
+        //     res.send(result);
+        // })
 
 
         // Connect the client to the server	(optional starting in v4.7)
