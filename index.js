@@ -38,11 +38,11 @@ async function run() {
         //     res.send(result);
         // })
         // get all services by extra functionality : filter / search
-        app.get('/services', async(req, res)=>{
+        app.get('/services', async (req, res) => {
             const filter = req.query.filter;
             console.log(filter);
             let query = {}
-            if(filter){
+            if (filter) {
                 query.category = filter;
             }
             const result = await serviceCollection.find(query).toArray();
@@ -66,12 +66,13 @@ async function run() {
         app.get('/my-services/:email', async (req, res) => {
             const email = req.params.email;
             const search = req.query.search;
-            let query = { email: email, 
-                title : {
+            let query = {
+                email: email,
+                title: {
                     $regex: search,
                     $options: "i"
                 }
-             };
+            };
             const result = await serviceCollection.find(query).toArray()
             // console.log(result);
             res.send(result);
@@ -106,7 +107,7 @@ async function run() {
             // console.log(result);
         })
         // set all reviews to API
-        app.get('/reviews', async(req, res)=>{
+        app.get('/reviews', async (req, res) => {
             const result = await reviewCollection.find().toArray();
             res.send(result);
         })
@@ -130,13 +131,13 @@ async function run() {
             const result = await reviewCollection.updateOne(query, updated, options);
             res.send(result);
         })
-        // delete a job ---------------------
-        app.delete('/reviews/:id', async (req, res) => {
+        // delete a review ---------------------
+        app.delete('/my-reviews/:id', async (req, res) => {
             const id = req.params.id;
-            const query = { _id: new ObjectId(id) };
+            const query = { _id: new ObjectId(id) }; 
             const result = await reviewCollection.deleteOne(query);
             res.send(result);
-        })
+        });
 
 
         // Connect the client to the server	(optional starting in v4.7)
