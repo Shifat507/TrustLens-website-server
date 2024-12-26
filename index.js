@@ -1,7 +1,7 @@
 require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
-const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId, Timestamp } = require('mongodb');
 const port = process.env.PORT || 5000
 const app = express()
 
@@ -31,9 +31,20 @@ async function run() {
             res.send(result)
             // console.log(result);
         })
-        // set all services to localhost API
-        app.get('/services', async (req, res) => {
-            const result = await serviceCollection.find().toArray();
+        // // set all services to localhost API
+        // app.get('/services', async (req, res) => {
+        //     const result = await serviceCollection.find().toArray();
+        //     res.send(result);
+        // })
+        // get all services by extra functionality : filter / search
+        app.get('/services', async(req, res)=>{
+            const filter = req.query.filter;
+            console.log(filter);
+            let query = {}
+            if(filter){
+                query.category = filter;
+            }
+            const result = await serviceCollection.find(query).toArray();
             res.send(result);
         })
         // featured section data
@@ -53,7 +64,13 @@ async function run() {
         // get all services posted by specific user 
         app.get('/my-services/:email', async (req, res) => {
             const email = req.params.email;
-            const query = { email: email };
+            const search = req.query.search;
+            let query = { email: email, 
+                title : {
+                    $regex: search,
+                    $options: "i"
+                }
+             };
             const result = await serviceCollection.find(query).toArray()
             // console.log(result);
             res.send(result);
