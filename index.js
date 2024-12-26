@@ -23,6 +23,7 @@ async function run() {
     try {
         //service APIs:
         const serviceCollection = client.db('service-db').collection('service');
+        const reviewCollection = client.db('service-db').collection('review');
 
         // add service API
         app.post('/add-service', async (req, res) => {
@@ -93,6 +94,28 @@ async function run() {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
             const result = await serviceCollection.deleteOne(query);
+            res.send(result);
+        })
+
+        // review APIs
+        // Add review to db
+        app.post('/add-review', async (req, res) => {
+            const reviewData = req.body;
+            const result = await reviewCollection.insertOne(reviewData)
+            res.send(result)
+            // console.log(result);
+        })
+        // set all reviews to API
+        app.get('/reviews', async(req, res)=>{
+            const result = await reviewCollection.find().toArray();
+            res.send(result);
+        })
+        // get all services posted by specific user 
+        app.get('/my-reviews/:email', async (req, res) => {
+            const email = req.params.email;
+            let query = { email: email };
+            const result = await reviewCollection.find(query).toArray()
+            // console.log(result);
             res.send(result);
         })
 
